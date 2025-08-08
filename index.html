@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обратный отсчёт до 13 августа 2025</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+        #countdown {
+            font-size: 2em;
+            margin: 20px 0;
+            color: #333;
+        }
+        #message {
+            font-size: 1.5em;
+            color: #e74c3c;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>вам осталось </h1>
+    <div id="countdown"></div>
+    <div id="message">https://www.roblox.com/share?code=338532c351ddc343949f6468d4a715c6&type=ExperienceDetails&stamp=1754661650928</div>
+
+    <script>
+        const countdownDate = new Date("August 13, 2025 00:00:00").getTime();
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+            
+            // Если время вышло
+            if (distance <= 0) {
+                document.getElementById("countdown").style.display = "none";
+                document.getElementById("message").style.display = "block";
+                return;
+            }
+            
+            // Рассчитываем дни, часы, минуты, секунды
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Выводим результат
+            document.getElementById("countdown").innerHTML = 
+                `${days} дней ${hours} часов ${minutes} минут ${seconds} секунд`;
+        }
+        
+        // Обновляем каждую секунду
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Запускаем сразу
+    </script>
+</body>
+</html>
