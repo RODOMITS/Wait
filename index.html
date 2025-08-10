@@ -3,94 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Секретный доступ</title>
+    <title>Таймер</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 20px;
-            background: #f5f5f5;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        #countdown {
+            font-size: 1.5em;
+            margin: 30px 0;
+            color: #333;
         }
         #password-section {
-            margin: 30px auto;
+            margin-top: 40px;
             padding: 20px;
-            background: white;
+            background: #f5f5f5;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 400px;
         }
         #password-input {
             padding: 10px;
+            font-size: 16px;
             width: 200px;
-            margin-right: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
         button {
-            padding: 10px 15px;
+            padding: 10px 20px;
             background: #4CAF50;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
         }
         #message {
             margin-top: 15px;
-            min-height: 20px;
             color: #2e7d32;
             font-weight: bold;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
 </head>
 <body>
+    <h1>Обратный отсчёт</h1>
+    <div id="countdown"></div>
+
     <div id="password-section">
-        <h3>Введите секретный код</h3>
-        <input type="password" id="password-input" placeholder="Код доступа">
+        <h3>Секретный доступ</h3>
+        <input type="password" id="password-input" placeholder="Введите код доступа">
         <button onclick="checkAccess()">Проверить</button>
         <div id="message"></div>
     </div>
 
     <script>
+        // Обратный отсчёт
+        function updateCountdown() {
+            const countdownDate = new Date("August 13, 2025 00:00:00").getTime();
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById("countdown").innerHTML = 
+                `${days} дней ${hours} часов ${minutes} минут ${seconds} секунд`;
+        }
+
+        // Проверка доступа
         function checkAccess() {
             const input = document.getElementById("password-input").value;
+            const inputHash = sha256(input);
             const message = document.getElementById("message");
             
-            // Защищённая проверка без явного указания паролей
-            const check1 = () => {
-                let x = 0;
-                for(let i = 0; i < input.length; i++) {
-                    x += input.charCodeAt(i) * (i+1);
-                }
-                return x === 941 && input.length === 8;
-            };
+            // Предварительно вычисленный хеш (без указания пароля)
+            const secretHash = "2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b";
             
-            const check2 = () => {
-                return input.split('').reverse().join('') === 'terces';
-            };
-            
-            if (check1()) {
-                message.textContent = "Доступ разрешен: 1337...";
-            } 
-            else if (check2()) {
-                message.textContent = "Скачивание секретного файла...";
-                // Создаем временную ссылку для скачивания
+            if(inputHash === secretHash) {
+                message.textContent = "Доступ разрешён! Скачивание файла...";
+                message.style.color = "#2e7d32";
+                
+                // Создаем ссылку для скачивания
                 const link = document.createElement('a');
-                link.href = 'secret_image.jpg';
-                link.download = 'секретное_изображение.jpg';
+                link.href = 'Без названия27_20250810154036.jpg';
+                link.download = 'secured_image.jpg';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-            }
-            else {
-                message.textContent = "Неверный код!";
+            } else {
+                message.textContent = "Неверный код доступа";
                 message.style.color = "#c62828";
             }
         }
-        
+
         // Обработка нажатия Enter
         document.getElementById("password-input").addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkAccess();
+            if (e.key === 'Enter') {
+                checkAccess();
+            }
         });
+
+        // Запуск таймера
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
     </script>
 </body>
 </html>
